@@ -1,25 +1,71 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import BookingForm from "./components/BookingForm/BookingForm";
+import Navbar from "./components/Navbar/Navbar";
+import Hero from "./components/Hero/Hero";
+import About from "./components/About/About";
+import Services from "./components/Services/Services";
+import CarList from "./components/CarList/CarList";
+import AppStoreBanner from "./components/AppStoreBanner/AppStoreBanner";
+import Contact from "./components/Contact/Contact";
+import Testimonial from "./components/Testimonial/Testimonial";
+import Footer from "./components/Footer/Footer";
 
-function App() {
+const App = () => {
+  // Dark mode setup
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
+  );
+  const element = document.documentElement;
+
+  useEffect(() => {
+    if (theme === "dark") {
+      element.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      element.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [theme]);
+
+  // Initialize AOS
+  useEffect(() => {
+    AOS.init({
+      offset: 100,
+      duration: 800,
+      easing: "ease-in-sine",
+      delay: 100,
+    });
+    AOS.refresh();
+  }, []);
+
+  const [showBookingForm, setShowBookingForm] = useState(false);
+
+  const handleCloseBookingForm = () => {
+    setShowBookingForm(false);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="bg-white dark:bg-black dark:text-white text-black overflow-x-hidden">
+      <Navbar theme={theme} setTheme={setTheme} />
+      <Hero theme={theme} />
+      <About />
+      <Services />
+      <CarList />
+      <Testimonial />
+      <AppStoreBanner />
+      <Contact />
+      <Footer />
+      {showBookingForm && <BookingForm onClose={handleCloseBookingForm} />}
+      <button
+        className="fixed bottom-4 right-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={() => setShowBookingForm(true)}
+      >
+        Open Booking Form
+      </button>
     </div>
   );
-}
+};
 
 export default App;
